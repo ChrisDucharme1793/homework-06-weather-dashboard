@@ -1,5 +1,5 @@
 $(document).ready(function() {
-	// MAIN PROCESSES
+	//Event click for Search button
 	$("#search-button").on("click", function(event) {
 	  event.preventDefault();
 	  var city = $("#city").val();
@@ -21,10 +21,10 @@ $(document).ready(function() {
 	$("#city-info").hide();
 	$("#forecast").hide();
   
-	// Load Recent Searches Item from Local Storage
+	// Load Recent Searches from Local Storage
 	getRecentSearches();
   
-	//   FUNCTIONS
+	
 	// Get City Weather Info
 	function getCityWeather(city) {
 	  $("#city-info").show();
@@ -125,7 +125,7 @@ $(document).ready(function() {
 	  }).then(function(response) {
 		var cardHTML = "";
   
-		// Loop through hourly weather update. Incrementing by 8 to get next day values
+		// Loop for five day
 		for (var i = 1; i < response.list.length; i += 8) {
 		  // Getting icon from weather response object
 		  var weatherIcon = response.list[i].weather[0].icon;
@@ -136,7 +136,7 @@ $(document).ready(function() {
 		  var date = dateStrArr[0];
 		  var dateArr = date.split("-");
 		  var newDate = dateArr[1] + "/" + dateArr[2] + "/" + dateArr[0];
-		
+		//Card for five day
 		  cardHTML += `
 			  <div class="card text-white bg-dark p-1 mr-3">
 				  <div class="card-header text-center  font-weight-bold">${newDate}</div>
