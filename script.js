@@ -1,5 +1,5 @@
 $(document).ready(function() {
-	//Event click for Search button
+	// Event Click for Search Button
 	$("#search-button").on("click", function(event) {
 	  event.preventDefault();
 	  var city = $("#city").val();
@@ -11,13 +11,13 @@ $(document).ready(function() {
 	  }
 	});
   
-	// Add onclick listener to list items
+	// Onclick listener to search list items
 	$("#recent-searches-list").on("click", "li.list-group-item", function() {
 	  var city = $(this).text();
 	  getCityWeather(city);
 	});
   
-	// Hide Elements OnLoad
+	// Hide Elements til item is searched
 	$("#city-info").hide();
 	$("#forecast").hide();
   
@@ -25,7 +25,7 @@ $(document).ready(function() {
 	getRecentSearches();
   
 	
-	// Get City Weather Info
+	// City's Weather Info
 	function getCityWeather(city) {
 	  $("#city-info").show();
   
@@ -38,11 +38,7 @@ $(document).ready(function() {
   
 	  $.ajax({
 		url: newURL,
-		method: "GET",
-		error: function(){
-			alert("City not found");
-		}
-		
+		method: "GET"
 	  }).then(function(response) {
 		// City Name
 		$("#city-name").text(response.name);
@@ -51,15 +47,11 @@ $(document).ready(function() {
 		$("#date-today").text(`(${moment().format("l")})`);
   
 		// Weather Icon
-		
 		$("#weather-icon").attr(
 		  "src",
 		  `https://openweathermap.org/img/wn/${response.weather[0].icon}.png`
 		);
-		var iconcode = response.weather[0].icon;
-        var iconurl = "https://openweathermap.org/img/w/" + iconcode + ".png";
-		$(".icon").attr('src', iconurl)
-		
+  
 		// Temperature in Fahrenheit
 		$("#temperature").text(response.main.temp + " F");
   
@@ -80,9 +72,9 @@ $(document).ready(function() {
 	  });
 	}
   
-	// Get UV Index
+	// UV Index
 	function getUVIndex(lon, lat) {
-	  var api_key = "8045ec9f12de714284aa8926a3a735d1";
+	  var api_key = "ef9704d691706b1a922e0f0e52268d4e";
 	  var baseURL = `https://api.openweathermap.org/data/2.5/uvi?appid=${api_key}`;
   
 	  var newURL = baseURL + "&lat=" + lat + "&lon=" + lon;
@@ -109,7 +101,7 @@ $(document).ready(function() {
 	  });
 	}
   
-	// Get Five Day forecast
+	// Five Day forecast
 	function getWeekForecast(id) {
 	  $("#forecast").show();
   
@@ -127,27 +119,27 @@ $(document).ready(function() {
   
 		// Loop for five day
 		for (var i = 1; i < response.list.length; i += 8) {
-		  // Getting icon from weather response object
+		  // icon from response
 		  var weatherIcon = response.list[i].weather[0].icon;
   
-		  // Convert Date String to Month/Date/Year Format
+		  //  Date to Month/Date/Year Format
 		  var dateStr = response.list[i].dt_txt;
 		  var dateStrArr = dateStr.split(" ");
 		  var date = dateStrArr[0];
 		  var dateArr = date.split("-");
 		  var newDate = dateArr[1] + "/" + dateArr[2] + "/" + dateArr[0];
-		//Card for five day
+			//card for five day
 		  cardHTML += `
 			  <div class="card text-white bg-dark p-1 mr-3">
-				  <div class="card-header text-center  font-weight-bold">${newDate}</div>
+				  <div class="card-header text-center font-weight-bold">${newDate}</div>
 				  <div class="card-body">
 				  <p class="card-text text-center">
 					  <img id="weather-icon" src="https://openweathermap.org/img/wn/${weatherIcon}.png"/>
 				  </p>
-				  <p class="card-text" id = "fore-temp">
+				  <p class="card-text">
 					  Temp: ${response.list[i].main.temp} F
 				  </p>
-				  <p class="card-text" id ="fore-hum">
+				  <p class="card-text">
 					  Humidity: ${response.list[i].main.humidity}%
 				  </p>
 				  </div>
@@ -157,37 +149,15 @@ $(document).ready(function() {
 		}
 	  });
 	}
-	$.ajax({
-        url: queryURL,
-        method: "GET"
-    }).then(function(response){
-        var forecastTimes = response.list;
-        for (i = 0; i < forecastTimes.length; i++) {
-            if (forecastTimes[i].dt_txt[12] === "2") {
-                var forecastdate = forecastTimes[i].dt_txt;
-                var forecastdatedisplay = forecastdate.charAt(5) + forecastdate.charAt(6) + "/" + forecastdate.charAt(8) + forecastdate.charAt(9) +
-                "/" + forecastdate.charAt(0) + forecastdate.charAt(1) + forecastdate.charAt(2) + forecastdate.charAt(3);
-                var fcIcon = forecastTimes[i].weather[0].icon;
-                var fcIconURL = "https://openweathermap.org/img/w/" + fcIcon + ".png";
-                var fcTemp = forecastTimes[i].main.temp * (9/5) - 459.67;
-                var fcHumidity = forecastTimes[i].main.humidity;
-                if (forecastdisplay === false || forecastdisplay === undefined) {
-                    $(".forecast-days").append("<div class='col-md-2 col-lg-2 forecast-day'>" + "<h6>" + forecastdatedisplay + "<h6>" + "<img class='ficon' src=" + fcIconURL + " alt='Weather icon'>" + "<div class='forecast-day'>Temp: " + fcTemp.toFixed(1) + " °F" + "</div><div class='forecast-day'>Humidity: " + fcHumidity + "%</div></div></div>");
-                } 
-            }
-        }
-        forecastdisplay = true;
-    })
-});
   
-	// Add new search to Recent Searches list
+	// Add new city to Recent Searches list
 	var cities = [];
   
 	function addToRecentSearches(city) {
 	  $("#recent-searches").show();
   
 	  // Create Element
-	  const newCity = $("<li>");
+	  var newCity = $("<li>");
 	  newCity.addClass("list-group-item");
 	  newCity.text(city);
 	  // Append to List
@@ -205,11 +175,11 @@ $(document).ready(function() {
   
 	// Get Recent Searches from localStorage
 	function getRecentSearches() {
-	  const searches = JSON.parse(localStorage.getItem("searches"));
+	  var searches = JSON.parse(localStorage.getItem("searches"));
 	  if (searches != null) {
 		for (var i = 0; i < searches.length; i++) {
 		  // Create Element
-		  const newCity = $("<li>");
+		  var newCity = $("<li>");
 		  newCity.addClass("list-group-item");
 		  newCity.text(searches[i].city);
 		  // Append to List
@@ -220,7 +190,8 @@ $(document).ready(function() {
 		$("#recent-searches").hide();
 	  }
 	}
-  ;
+  });
+  
 
   //This clears the previous searches when user clicks on clear history button.
 $(".clear").on("click", function() {
